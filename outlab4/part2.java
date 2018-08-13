@@ -63,7 +63,12 @@ public class Main {
 				}
 				conn.commit();
 				while (true) {
-					String id = scanner.next();
+					String id = "";
+					try {
+						id = scanner.next();
+					} catch (Exception NoSuchElementException) {
+						System.exit(0);
+					}
 					stmt6.setString(1, id);
 					ResultSet rs = stmt6.executeQuery();
 					conn.commit();
