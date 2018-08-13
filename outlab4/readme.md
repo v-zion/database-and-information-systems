@@ -1,4 +1,5 @@
 Assignment 4B: JDBC TakeHome (can be done in a group of 2)
+
 1: This assignment can be done in a group of 2 students; individual submissions are fine, but won't get extra credit!
 2. This is a take home assignment. You may work on it in the lab if you finish 4A.
 
