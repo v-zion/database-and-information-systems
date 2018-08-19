@@ -18,7 +18,7 @@ import java.sql.*;
 public class Home extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	public static final String url = "jdbc:postgresql://localhost:5400/postgres";
-	public static final String user = "labuser";
+	public static final String user = "animesh";
 	public static final String password = "";
        
     /**
@@ -28,6 +28,31 @@ public class Home extends HttpServlet {
         super();
         // TODO Auto-generated constructor stub
     }
+    
+    private void toHTML(ResultSet rSet, PrintWriter out) {
+    			try {
+    				ResultSetMetaData rSetMetaData = rSet.getMetaData();
+    			
+
+				out.print("<table>\n");
+				out.print("    <tr>");
+
+				for (int i=0; i<rSetMetaData.getColumnCount(); i++)
+					out.print("<th>" + rSetMetaData.getColumnName(i+1) + "</th>");
+				out.print("</tr>\n");
+
+				while (rSet.next()) {
+					out.print("    <tr>");
+					for (int i=0; i<rSetMetaData.getColumnCount(); i++)
+						out.print("<td>" + rSet.getString(i+1) + "</td>");
+					out.print("</tr>\n");
+				}
+
+				out.print("</table>\n");
+    			} catch (Exception e) {
+    				e.printStackTrace();
+    			}
+	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -39,51 +64,54 @@ public class Home extends HttpServlet {
 			response.sendRedirect("Login");
 		}
 		else {
-			String id = (String)session.getAttribute("id");
+			String uid = (String)session.getAttribute("uid");
+			out.println("<body>");
+			out.println("<form action=\"createConversation\" method=\"post\">");
+			out.println("Enter ID of user: <input type=\"text\" name=\"uid\">");
+			out.println("<input type=\"submit\" value=\"Create\"></form>");
+
+			out.println("<br><form action = \"Logout\" method = \"post\">"
+				+ "<input type = \"submit\" value = \"Logout\"></form>");
+			out.println("</body>");
+
 			try (Connection conn = DriverManager.getConnection(url, user, password)){
 				conn.setAutoCommit(false);
-				try (PreparedStatement stmt1 = conn.prepareStatement("select name, dept_name from student where id = ?");
-					PreparedStatement stmt2 = conn.prepareStatement("select name, dept_name from instructor where id = ?")){
-					stmt1.setString(1, id);
-					stmt2.setString(1, id);
-					ResultSet rs1 = stmt1.executeQuery();
-					ResultSet rs2 = stmt2.executeQuery();
+				try (PreparedStatement stmt1 = conn.prepareStatement("with convs_with_name as (select * "
+						+ "from (select uid1, uid2, thread_id, name1, name "
+						+ "from (select uid1, uid2, thread_id, name "
+						+ "from conversations join users on uid1 = uid) as cu1(uid1, uid2, thread_id, name1) "
+						+ "join users on uid2 = uid) as cu2(uid1, uid2, thread_id, name1, name2)), "
+						+ "convs as (select * "
+						+ "from convs_with_name left outer join posts on convs_with_name.thread_id = posts.thread_id "
+						+ "where (uid1 = ? or uid2 = ?)), "
+						+ "recent as (select distinct on (uid1, uid2) "
+						+ "name1, name2, timestamp, text from convs), "
+						+ "cranked as (select name1, name2, timestamp, text, rank() over (order by timestamp desc nulls last) as crank from recent "
+						+ "order by text) "
+						+ "select case when name1 = ? then name2 else name1 end as name, text, timestamp from cranked order by crank");
+					PreparedStatement stmt2 = conn.prepareStatement("select name from users where uid = ?");){
+					stmt2.setString(1, uid);
+					ResultSet rs1 = stmt2.executeQuery();
 					conn.commit();
-					Boolean is_student = false;
 					String name = "";
-					String dept_name = "";
 					if (rs1.next()) {
-						is_student = true;
 						name = rs1.getString(1);
-						dept_name = rs1.getString(2);
-					}
-					else {
-						rs2.next();
-						name = rs2.getString(1);
-						dept_name = rs2.getString(2);
-					}
-					out.println("<body>");
-					out.println("Name: " + name + "<br>");
-					out.println("Department name: " + dept_name + "<br>");
-					if (is_student) {
-						out.println("<a href = \"displayGrades\">Grades</a><br>");
-					}
-					
-					out.println("<br><form action = \"Logout\" method = \"post\">"
-							+ "<input type = \"submit\" value = \"Logout\">");
-					out.println("</body>");
-					
-					
+					}					
+					stmt1.setString(1, uid);
+					stmt1.setString(2, uid);
+					stmt1.setString(3, name);
+					ResultSet rs = stmt1.executeQuery();
+					conn.commit();
+					toHTML(rs, out);
 				} catch (Exception ex) {
 					conn.rollback();
 					throw ex;
 				}
-			} catch (Exception e) {
+			} catch (Exception e){
 				e.printStackTrace();
 			}
-			
+		
 		}
-//		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**

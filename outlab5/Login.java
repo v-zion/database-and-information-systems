@@ -67,7 +67,7 @@ public class Login extends HttpServlet {
 							String p = rs.getString(1);
 							if (p.equals(pass)) {
 								session = request.getSession(true);
-								session.setAttribute("id", id);
+								session.setAttribute("uid", id);
 								session.setAttribute("pass", pass);
 								out.println("Authentication successful");
 								response.sendRedirect("Home");
