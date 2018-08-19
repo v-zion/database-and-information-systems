@@ -1,9 +1,10 @@
 import java.sql.*;
 import java.util.Scanner;
+import javax.json.*;
 
 public class Main {
-	private static final String url = "jdbc:postgresql://localhost:1070/postgres";
-	private static final String user = "neo";
+	private static final String url = "jdbc:postgresql://localhost:5400/postgres";
+	private static final String user = "animesh";
 	private static final String password = "";
 
 	public static void main(String[] args) {
@@ -52,39 +53,55 @@ public class Main {
 
 				ResultSet rSet = stmt.executeQuery(query);
 				ResultSetMetaData rSetMetaData = rSet.getMetaData();
+				
+				JsonObjectBuilder json = Json.createObjectBuilder();
+				JsonArrayBuilder header = Json.createArrayBuilder();
+				JsonArrayBuilder data = Json.createArrayBuilder();
+				
+				
+				
 
-				System.out.print("{\"header\": [");
+//				System.out.print("{\"header\": [");
 				for (int i=0; i<rSetMetaData.getColumnCount(); i++){
-					System.out.print("\"" + rSetMetaData.getColumnName(i+1) + "\"");
-					if (i != rSetMetaData.getColumnCount()-1)
-						System.out.print(", ");
+					String col = rSetMetaData.getColumnName(i + 1).toString();
+					header.add(col);
+//					System.out.print("\"" + rSetMetaData.getColumnName(i+1) + "\"");
+//					if (i != rSetMetaData.getColumnCount()-1)
+//						System.out.print(", ");
 				}
-				System.out.print("],\n");
+//				System.out.print("],\n");
 
 				rSet.last();
 				int n = rSet.getRow();
 				rSet.first();
 				rSet.previous();
 
-				System.out.print(" \"data\": [");
+//				System.out.print(" \"data\": [");
 				while (rSet.next()) {
-					if (rSet.getRow() == 1)
-						System.out.print("{");
-					else
-						System.out.print("          {");
+					JsonObjectBuilder datarow = Json.createObjectBuilder();
+//					if (rSet.getRow() == 1)
+//						System.out.print("{");
+//					else
+//						System.out.print("          {");
 					for(int i=0; i<rSetMetaData.getColumnCount(); i++){
-						System.out.print("\"" + rSetMetaData.getColumnName(i+1) + "\":\"" + rSet.getString(i+1) + "\"");
-						if (i != rSetMetaData.getColumnCount()-1)
-							System.out.print(", ");
+						datarow.add(rSetMetaData.getColumnName(i+1), rSet.getString(i+1));
+//						System.out.print("\"" + rSetMetaData.getColumnName(i+1) + "\":\"" + rSet.getString(i+1) + "\"");
+//						if (i != rSetMetaData.getColumnCount()-1)
+//							System.out.print(", ");
 					}
-					System.out.print("}");
-					if (rSet.getRow() != n)
-						System.out.print(",");
-					System.out.println();
+//					System.out.print("}");
+//					if (rSet.getRow() != n)
+//						System.out.print(",");
+					data.add(datarow);
+//					System.out.println();
 				}
 
-				System.out.println("         ]");
-				System.out.println("}");
+//				System.out.println("         ]");
+//				System.out.println("}");
+				json.add("header", header);
+				json.add("data", data);
+				JsonObject js = json.build();
+				System.out.println(js.toString());
 			}
 			catch(Exception ex) {
 				throw ex;
