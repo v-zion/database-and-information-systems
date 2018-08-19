@@ -2,7 +2,7 @@ import java.sql.*;
 import java.util.*;
 
 
-public class Main {
+public class 4B_Part2_160050040_160050107 {
 
 	private static final String url = "jdbc:postgresql://localhost:5400/postgres";
 	private static final String user = "animesh";
