@@ -1,3 +1,11 @@
+-- To drop tables before creating, uncomment the following lines:
+
+-- drop table password;
+-- drop table posts;
+-- drop table conversations;
+-- drop table users;
+
+
 create table users(
     uid varchar(10) primary key, 
     name varchar(20), 
@@ -17,4 +25,9 @@ create table posts (
     uid varchar(10) references users,
     timestamp timestamp,
     text varchar(256)
+);
+
+create table password (
+    id varchar(10) primary key references users,
+    password varchar(20)
 );
