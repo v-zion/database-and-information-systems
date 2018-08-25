@@ -1,6 +1,13 @@
 -- Uncomment if needed
 -- create database whatasap;
 
+-- Dropping tables before creating
+drop table password;
+drop table posts;
+drop table conversations;
+drop table users;
+
+
 create table users(
     uid varchar(10) primary key,
     name varchar(20),
