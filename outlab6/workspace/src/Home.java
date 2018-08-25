@@ -32,16 +32,18 @@ public class Home extends HttpServlet {
 
 				"    <link rel=\"stylesheet\" href=\"jquery-ui.css\" />" + 
 				"    <link rel=\"stylesheet\" href=\"jquery.dataTables.min.css\"/>" + 
+//				"    <link rel=\"stylesheet\" href=\"https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css\"/>" + 
 				
 				"	 <script src=\"whatasap_home.js\"></script>" +
 				"</head>" + 
 				"<body>" + 
+				"<button onclick=\"originalTable()\">Home</button><br><br>" + 
 				"    <div id=\"content\">" +
 				"	 </div> <br><br>" + 
 				"    <button onclick=\"loadTableAsync()\">Load table data</button><br><br>" +
 				"    <table id=\"usersTable\" class=\"display\">" + 
 				"        <thead>" + 
-				"        <tr> <th>User ID</th> <th>Name</th> <th>Phone</th> </tr>" + 
+				"        <tr> <th>User ID</th> <th>Last timestamp</th> <th>Number of messages</th> </tr>" + 
 				"        </thead>" + 
 				"    </table>" + 
 				"</body>" + 
