@@ -40,12 +40,6 @@ public class Home extends HttpServlet {
 				"<button onclick=\"originalTable()\">Home</button><br><br>" + 
 				"    <div id=\"content\">" +
 				"	 </div> <br><br>" + 
-				"    <button onclick=\"loadTableAsync()\">Load table data</button><br><br>" +
-				"    <table id=\"usersTable\" class=\"display\">" + 
-				"        <thead>" + 
-				"        <tr> <th>User ID</th> <th>Last timestamp</th> <th>Number of messages</th> </tr>" + 
-				"        </thead>" + 
-				"    </table>" + 
 				"</body>" + 
 				"</html>";
 		response.setContentType("text/html");

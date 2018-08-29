@@ -68,9 +68,44 @@ function convDetails(other_id){
 	      	  table += "</tr>";
 	    	}
 	    	table += "</table>";
+	    	table += "<br>New message:<br><form id=\"newmsg\">" +
+	    			"Message: <input id=\"msginputfield\" type=\"text\"><br><input type=\"submit\"></form>";
+	    	
 	    	$("#content").html(table);
+	    	$("#newmsg").on('submit', function(){
+//	    		alert('here');
+//	    		console.log('here');
+	    		createNewMessage(other_id);
+//	    		alert('fjsdlkfsdjf');
+	    		return false;
+	    	});
 	    }
 	  };
 	  xhttp.open("GET", "ConversationDetail?other_id=" + other_id, true);
 	  xhttp.send();
+}
+
+function createNewMessage(other_id){
+//	alert('jflksjfkl');
+	var xhttp = new XMLHttpRequest();
+//	alert('heredsfsdfs');
+	var msg = $("#msginputfield").val();
+//	alert(msg);
+	xhttp.onreadystatechange = function(){
+		if (this.readyState == 4 && this.status == 200) {
+	    	var jsonobj = JSON.parse(this.responseText);
+	    	if (jsonobj.status){
+	    		convDetails(other_id);
+//	    		return false;
+	    	}
+	    	else{
+	    		var error = jsonobj.message;
+	    		alert(error);
+//	    		return false;
+	    	}
+	    }
+	}
+	xhttp.open("GET", "NewMessage?other_id=" + other_id + "&msg=" + msg, true);
+	xhttp.send();
+	return false;
 }
