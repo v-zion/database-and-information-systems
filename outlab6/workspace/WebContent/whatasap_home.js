@@ -8,7 +8,7 @@ $(document).ready(function() {
 //	myTable = $("#usersTable").DataTable({
 //        columns: [{data:"uid"}, {data:"name"}, {data:"phone"}]
 //    });
-	
+	alert("here0");
 	originalTable();
     
     
@@ -26,6 +26,7 @@ function loadTableAsync() {
 }
 
 function originalTable(){
+	alert("here1");
 	$("#content").html("<table id=\"usersTable\"><thead>" +
     		"<tr><th>User ID</th><th>Last timestamp</th><th>Number of messages</th>" +
     		"</tr></thead></table>");
@@ -52,9 +53,13 @@ function originalTable(){
         convDetails(other_id);
 //        $('#content').html(myTable.row(this).data()["uid"]);
     } );
+    alert("here");
+    $("#searchinput").val("");
+    $("#searchinput").autocomplete({source : "AutoCompleteUser"});
 }
 
 function convDetails(other_id){
+	alert("herecd");
 	var xhttp = new XMLHttpRequest();
 	  xhttp.onreadystatechange = function() {
 	    if (this.readyState == 4 && this.status == 200) {
@@ -108,4 +113,10 @@ function createNewMessage(other_id){
 	xhttp.open("GET", "NewMessage?other_id=" + other_id + "&msg=" + msg, true);
 	xhttp.send();
 	return false;
+}
+
+function searchformsubmit(){
+	var input_val = $("#searchinput").val();
+	convDetails(input_val);
+	return;
 }

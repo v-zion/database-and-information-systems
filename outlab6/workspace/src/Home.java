@@ -37,7 +37,10 @@ public class Home extends HttpServlet {
 				"	 <script src=\"whatasap_home.js\"></script>" +
 				"</head>" + 
 				"<body>" + 
-				"<button onclick=\"originalTable()\">Home</button><br><br>" + 
+				"<button onclick=\"originalTable()\">Home</button><br>" + 
+				"<form id=\"searchform\" onsubmit=\"searchformsubmit(); return false;\">"
+				+ "<input id=\"searchinput\" type=\"text\">"
+				+ "<input type=\"submit\"></form>" + 
 				"    <div id=\"content\">" +
 				"	 </div> <br><br>" + 
 				"</body>" + 
