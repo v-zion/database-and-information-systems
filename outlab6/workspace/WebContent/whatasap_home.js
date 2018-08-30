@@ -115,6 +115,36 @@ function createNewMessage(other_id){
 	return false;
 }
 
+function createConversation(other_id) {
+	var str = "<form id=\"conv_form\">" +
+		"Enter ID <input type=\"text\" id=\"other_id\">" +
+		"<br><input type=\"submit\">" +
+		"</form>";
+	document.getElementById("content").innerHTML = str;
+	$("#conv_form").submit(function(){
+		var other_id = $("#other_id").val();
+		var xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+		    	var jsonobj = JSON.parse(this.responseText);
+		    	if (jsonobj.status){
+		    		convDetails(other_id);
+//		    		return false;
+		    	}
+		    	else{
+		    		var error = jsonobj.message;
+		    		alert(error);
+//		    		return false;
+		    	}
+		    }
+		};
+		xhttp.open("GET", "CreateConversation?other_id=" + other_id, true);
+		xhttp.send();
+	});
+	$("#conv_form").autocomplete({source : "AutoCompleteUser"});
+	return false;
+}
+
 function searchformsubmit(){
 	var input_val = $("#searchinput").val();
 	convDetails(input_val);

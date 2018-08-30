@@ -41,6 +41,7 @@ public class Home extends HttpServlet {
 				"<form id=\"searchform\" onsubmit=\"searchformsubmit(); return false;\">"
 				+ "<input id=\"searchinput\" type=\"text\">"
 				+ "<input type=\"submit\"></form>" + 
+				"<button onclick=\"createConversation()\">Create conversation</button><br>" +
 				"    <div id=\"content\">" +
 				"	 </div> <br><br>" + 
 				"</body>" + 
