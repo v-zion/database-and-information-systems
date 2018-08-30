@@ -141,7 +141,8 @@ function createConversation(other_id) {
 		xhttp.open("GET", "CreateConversation?other_id=" + other_id, true);
 		xhttp.send();
 	});
-	$("#conv_form").autocomplete({source : "AutoCompleteUser"});
+	$("#other_id").val("");
+	$("#other_id").autocomplete({source : "AutoCompleteUser"});
 	return false;
 }
 
