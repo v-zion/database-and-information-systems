@@ -9,9 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
-
 /**
  * Servlet implementation class NewMessage
  */
@@ -40,8 +37,8 @@ public class NewMessage extends HttpServlet {
 		String other_id = request.getParameter("other_id");
 		String newMsg = request.getParameter("msg");
 		
-		String sanitizedMsg = Jsoup.clean(newMsg, Whitelist.basic());
-				
+		String sanitizedMsg = newMsg; //Edit this line to sanitize newMsg before assigning to sanitizedMsg
+		
 		//Get thread_id
 		String threadQuery = "select thread_id "
 				+ "from conversations "

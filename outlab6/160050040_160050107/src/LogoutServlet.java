@@ -8,16 +8,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class ConversationDetail
+ * Servlet implementation class LogoutServlet
  */
-@WebServlet("/ConversationDetail")
-public class ConversationDetail extends HttpServlet {
+@WebServlet("/LogoutServlet")
+public class LogoutServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ConversationDetail() {
+    public LogoutServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -31,22 +31,8 @@ public class ConversationDetail extends HttpServlet {
 		if(session.getAttribute("id") == null) { //not logged in
 			response.sendRedirect("LoginServlet");
 		}
-		String id = (String) session.getAttribute("id");
-		String other_id = request.getParameter("other_id");
-		
-		String messagesQuery = "select p.* "
-				+ "from posts p, conversations c "
-				+ "where p.thread_id = c.thread_id "
-				+ "and ((c.uid1 = ? and c.uid2 = ?) or "
-				+ "		(c.uid2 = ? and c.uid1 = ?)) "
-				+ "order by p.timestamp desc";
-		String json = DbHelper.executeQueryJson(messagesQuery, 
-				new DbHelper.ParamType[] {DbHelper.ParamType.STRING,
-						DbHelper.ParamType.STRING,
-						DbHelper.ParamType.STRING,
-						DbHelper.ParamType.STRING}, 
-				new String[] {id, other_id, id, other_id});
-		response.getWriter().print(json);
+		session.invalidate();
+		response.sendRedirect("LoginServlet");
 	}
 
 	/**
@@ -55,10 +41,6 @@ public class ConversationDetail extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
-	}
-	
-	public static void main(String[] args) throws ServletException, IOException {
-		new ConversationDetail().doGet(null, null);
 	}
 
 }
