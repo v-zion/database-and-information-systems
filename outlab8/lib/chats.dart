@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'session.dart';
 import 'main.dart';
 import 'dart:convert';
+import 'chat_details.dart';
 
 class ChatPage extends StatefulWidget {
   @override
@@ -70,6 +71,7 @@ class ChatPageState extends State<ChatPage> {
             //                  reverse: true,
                 itemBuilder: (_, int index) => _messages[index],
                 itemCount: _messages.length,
+//                shrinkWrap: true,
               )
             )
           ],
@@ -85,19 +87,24 @@ class ChatPageState extends State<ChatPage> {
     postResponse.then((response) {
       Map<String, dynamic> jsonResponse = json.decode(response);
       print(jsonResponse);
-      if (jsonResponse['status']) {
-        for (Map<String, dynamic> d in jsonResponse['data']){
-          _messages.add(new ConvDetail(name: d['name'], lastTime: d['last_timestamp']));
-        }
-        print(_messages.length);
-//        _messages.sort((a, b) => DateTime.parse(a.lastTime).isAfter(DateTime.parse(b.lastTime)) ? 1 : -1);
+
         setState(() {
           _loaded = true;
-        });
-      }
-      else{
+          if (jsonResponse['status']) {
+            for (Map<String, dynamic> d in jsonResponse['data']) {
+              _messages.add(new ConvDetail(
+                  name: d['name'],
+                  lastTime: d['last_timestamp'] == null ? "" : d['last_timestamp'],
+                  id: d['uid']));
+            }
+            print(_messages.length);
+//        _messages.sort((a, b) => a == "" ? -1 : b == "" ? 1 : DateTime.parse(a.lastTime).isAfter(DateTime.parse(b.lastTime)) ? 1 : -1);
+          }
+          else{
 
-      }
+          }
+        });
+
     });
   }
 }
@@ -105,26 +112,35 @@ class ChatPageState extends State<ChatPage> {
 class ConvDetail extends StatelessWidget {
   final String lastTime;
   final String name;
-  ConvDetail({this.lastTime, this.name});
+  final String id;
+  ConvDetail({this.lastTime, this.name, this.id});
   @override
   Widget build(BuildContext context) {
-    return new Container(
-      margin: const EdgeInsets.symmetric(vertical: 10.0),
-      child: new Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          new Column(
+    return new InkWell(
+        child: new Container(
+          margin: const EdgeInsets.symmetric(vertical: 10.0),
+          child: new Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              new Text(name, style: Theme.of(context).textTheme.subhead),
-              new Container(
-                margin: const EdgeInsets.only(top: 5.0),
-                child: new Text(lastTime),
+              new Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  new Text(name, style: Theme.of(context).textTheme.subhead),
+                  new Container(
+                    margin: const EdgeInsets.only(top: 5.0),
+                    child: new Text(lastTime),
+                  ),
+                ],
               ),
             ],
+
           ),
-        ],
-      ),
+        ),
+      onTap: (){
+          Navigator.of(context).push(new MaterialPageRoute<void>(
+              builder: (BuildContext context) => new DetailsPage(otherId: id, name: name,)
+          ));
+      },
     );
   }
 }
