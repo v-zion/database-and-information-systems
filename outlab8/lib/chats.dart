@@ -148,7 +148,11 @@ class ConvDetail extends StatelessWidget {
       onTap: (){
           Navigator.of(context).push(new MaterialPageRoute<void>(
               builder: (BuildContext context) => new DetailsPage(otherId: id, name: name,)
-          ));
+          ))
+          .then((value) {
+            print('complted push');
+            Navigator.of(context).pushReplacement(new MaterialPageRoute<void>(builder: (BuildContext context) => new ChatPage()));
+          });
       },
     );
   }
