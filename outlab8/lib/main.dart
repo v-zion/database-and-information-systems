@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'login.dart';
 import 'session.dart';
+import 'chats.dart';
 
 void main() => runApp(new MyApp());
+
+String url_root = 'http://192.168.31.147:8080/lab8servlets/';
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -21,12 +24,7 @@ class MyApp extends StatelessWidget {
         // counter didn't reset back to zero; the application is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: new Scaffold(
-        appBar: new AppBar(
-          title: Text('Login Page'),
-        ),
-        body: new HomePage(),
-      ),
+      home: new HomePage(),
     );
   }
 }
@@ -40,13 +38,19 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     if (sessionExists()) {
-      return new LoginForm();
+//      return new Scaffold(
+//        appBar: new AppBar(
+//          title: new Text('Session headers'),
+//        ),
+//        body: new Text(new Session().headers.toString()),
+//      );
+    return new ChatPage();
     }
     return new LoginForm();
   }
   bool sessionExists(){
     Session session = new Session();
-    if (session.headers == {}){
+    if (session.headers.isEmpty){
       return false;
     }
     return true;
