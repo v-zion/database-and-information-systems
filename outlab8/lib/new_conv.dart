@@ -5,6 +5,7 @@ import 'main.dart';
 import 'dart:convert';
 import 'chat_details.dart';
 import 'chats.dart';
+import 'chat_details.dart';
 
 class NewConv extends StatefulWidget {
   @override
@@ -23,31 +24,46 @@ class NewConvState extends State<NewConv>{
       ),
       body:
         new TypeAheadField(
-        textFieldConfiguration: TextFieldConfiguration(
-            autofocus: true,
-            style: DefaultTextStyle.of(context).style.copyWith(
-                fontStyle: FontStyle.italic
-            ),
-            decoration: InputDecoration(
-                border: OutlineInputBorder()
-            )
-        ),
+//        textFieldConfiguration: TextFieldConfiguration(
+//            autofocus: true,
+//            style: DefaultTextStyle.of(context).style.copyWith(
+//                fontStyle: FontStyle.italic
+//            ),
+//            decoration: InputDecoration(
+//                border: OutlineInputBorder()
+//            )
+//        ),
         suggestionsCallback: (pattern) async {
-          session.get(urlRoot + 'AutoCompleteUser?term=' + pattern).then(print);
-//          return await session.get(urlRoot + 'AutoCompleteUser?term=' + pattern);
-        return [];
+          var response = await session.get(urlRoot + 'AutoCompleteUser?term=' + pattern);
+          print(response);
+          List<dynamic> res = <dynamic>[];
+          for (Map<String, dynamic> d in json.decode(response)){
+            res.add(d);
+          }
+          return res;
         },
         itemBuilder: (context, suggestion) {
           return ListTile(
-            leading: Icon(Icons.shopping_cart),
-            title: Text(suggestion['name']),
-            subtitle: Text('\$${suggestion['price']}'),
+//            leading: Icon(Icons.shopping_cart),
+            title: Text(suggestion['label']),
+//            subtitle: Text('\$${suggestion['price']}'),
+//            onTap: () {
+//              Navigator.of(context).push(new MaterialPageRoute(builder: (context) => new DetailsPage(otherId: suggestion['value'], name: suggestion['name'],)));
+//            },
           );
         },
         onSuggestionSelected: (suggestion) {
-//          Navigator.of(context).push(MaterialPageRoute(
-//              builder: (context) => ProductPage(product: suggestion)
-//          ));
+          print('selected');
+          session.get(urlRoot + 'CreateConversation?other_id=' + suggestion['value']).then(
+              (response) {
+                print(response);
+                Navigator.of(context).push(new MaterialPageRoute(
+                    builder: (context) =>
+                    new DetailsPage(otherId: suggestion['value'],
+                      name: suggestion['name'],)));
+              }
+          );
+
         },
       )
 

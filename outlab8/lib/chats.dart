@@ -43,7 +43,9 @@ class ChatPageState extends State<ChatPage> {
             IconButton(
               icon: Icon(Icons.create),
               onPressed: (){
-                Navigator.of(context).pushReplacement(new MaterialPageRoute<void>(builder: (BuildContext context) => new ChatPage()));
+                Navigator.of(context).push(new MaterialPageRoute<void>(builder: (BuildContext context) => new NewConv())).then(
+                    (value) => Navigator.of(context).pushReplacement(new MaterialPageRoute(builder: (BuildContext context) => new ChatPage()))
+                );
               }
             ),
             IconButton(
