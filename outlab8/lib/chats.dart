@@ -12,13 +12,14 @@ class ChatPageState extends State<ChatPage> {
 
   final session = new Session();
   bool _loaded = false;
+  final List<ConvDetail> _messages = <ConvDetail>[];
 
   @override
   Widget build(BuildContext context){
     if (!_loaded){
       return new Scaffold(
           appBar: new AppBar(
-            title: Text('Loading')
+            title: const Text('Loading')
           ),
           body: new Center(
             child: new CircularProgressIndicator(),
@@ -50,23 +51,29 @@ class ChatPageState extends State<ChatPage> {
               }
             )
           ],
-          child: new Container(
-            child: new Column(
-              children: <Widget>[
-                new TextField(
-                  decoration: new InputDecoration(
-                      labelText: 'Search'
-                  ),
-                  onChanged: (text){
-                    setState(() {
-
-                    });
-                  },
-                )
-              ],
-            )
-          )
         ),
+        body: new Column(
+          children: <Widget>[
+            new TextField(
+              decoration: new InputDecoration(
+                labelText: 'Search'
+              ),
+              onChanged: (text){
+                setState(() {
+
+                });
+              },
+            ),
+            new Flexible(
+              child: new ListView.builder(
+                padding: new EdgeInsets.all(8.0),
+            //                  reverse: true,
+                itemBuilder: (_, int index) => _messages[index],
+                itemCount: _messages.length,
+              )
+            )
+          ],
+        )
       );
     }
   }
@@ -74,10 +81,16 @@ class ChatPageState extends State<ChatPage> {
   @override
   void initState(){
     super.initState();
-    var postResponse = session.post(url_root + 'AllConversations', {});
+    var postResponse = session.post(urlRoot + 'AllConversations', {});
     postResponse.then((response) {
       Map<String, dynamic> jsonResponse = json.decode(response);
-      if (!jsonResponse['status']) {
+      print(jsonResponse);
+      if (jsonResponse['status']) {
+        for (Map<String, dynamic> d in jsonResponse['data']){
+          _messages.add(new ConvDetail(name: d['name'], lastTime: d['last_timestamp']));
+        }
+        print(_messages.length);
+//        _messages.sort((a, b) => DateTime.parse(a.lastTime).isAfter(DateTime.parse(b.lastTime)) ? 1 : -1);
         setState(() {
           _loaded = true;
         });
@@ -86,5 +99,32 @@ class ChatPageState extends State<ChatPage> {
 
       }
     });
+  }
+}
+
+class ConvDetail extends StatelessWidget {
+  final String lastTime;
+  final String name;
+  ConvDetail({this.lastTime, this.name});
+  @override
+  Widget build(BuildContext context) {
+    return new Container(
+      margin: const EdgeInsets.symmetric(vertical: 10.0),
+      child: new Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          new Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              new Text(name, style: Theme.of(context).textTheme.subhead),
+              new Container(
+                margin: const EdgeInsets.only(top: 5.0),
+                child: new Text(lastTime),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
