@@ -26,11 +26,47 @@ class ChatPageState extends State<ChatPage> {
       );
     }
     else{
-      return new Column(
-          children: <Widget>[
-            new CircularProgressIndicator(),
-            new Text('Loading...')
-          ]
+      return new Scaffold(
+        appBar: new AppBar(
+          title: const Text('Chats'),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.home),
+              onPressed: (){
+                Navigator.of(context).pushReplacement(new MaterialPageRoute<void>(builder: (BuildContext context) => new ChatPage()));
+              }
+            ),
+            IconButton(
+              icon: Icon(Icons.create),
+              onPressed: (){
+                Navigator.of(context).pushReplacement(new MaterialPageRoute<void>(builder: (BuildContext context) => new ChatPage()));
+              }
+            ),
+            IconButton(
+              icon: Icon(Icons.exit_to_app),
+              onPressed: (){
+                session.headers = {};
+                Navigator.of(context).pushReplacement(new MaterialPageRoute<void>(builder: (BuildContext context) => new HomePage()));
+              }
+            )
+          ],
+          child: new Container(
+            child: new Column(
+              children: <Widget>[
+                new TextField(
+                  decoration: new InputDecoration(
+                      labelText: 'Search'
+                  ),
+                  onChanged: (text){
+                    setState(() {
+
+                    });
+                  },
+                )
+              ],
+            )
+          )
+        ),
       );
     }
   }
