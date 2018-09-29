@@ -5,7 +5,7 @@ import 'chats.dart';
 
 void main() => runApp(new MyApp());
 
-String url_root = 'http://192.168.31.147:8080/lab8servlets/';
+String urlRoot = 'http://192.168.1.103:8080/lab8servlets/';
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.

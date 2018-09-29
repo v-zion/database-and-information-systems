@@ -3,23 +3,31 @@ import 'session.dart';
 import 'main.dart';
 import 'dart:convert';
 
-class ChatPage extends StatefulWidget {
+class DetailsPage extends StatefulWidget {
+
+  const DetailsPage({
+    Key key,
+    this.otherId
+}) : super(key : key);
+
+  final String otherId;
+
   @override
-  ChatPageState createState() => new ChatPageState();
+  DetailsPageState createState() => new DetailsPageState();
 }
 
-class ChatPageState extends State<ChatPage> {
+class DetailsPageState extends State<DetailsPage> {
 
   final session = new Session();
   bool _loaded = false;
-  final List<ConvDetail> _messages = <ConvDetail>[];
+
 
   @override
   Widget build(BuildContext context){
     if (!_loaded){
       return new Scaffold(
           appBar: new AppBar(
-            title: const Text('Loading')
+              title: Text('Loading')
           ),
           body: new Center(
             child: new CircularProgressIndicator(),
@@ -27,22 +35,11 @@ class ChatPageState extends State<ChatPage> {
       );
     }
     else{
-      return new Scaffold(
-        appBar: new AppBar(
-          title: const Text('Chats'),
-        ),
-        body: new Column(
+      return new Column(
           children: <Widget>[
-            new Flexible(
-                child: new ListView.builder(
-                  padding: new EdgeInsets.all(8.0),
-//                  reverse: true,
-                  itemBuilder: (_, int index) => _messages[index],
-                  itemCount: _messages.length,
-                )
-            )
-          ],
-        ),
+            new CircularProgressIndicator(),
+            new Text('Loading...')
+          ]
       );
     }
   }
@@ -50,16 +47,12 @@ class ChatPageState extends State<ChatPage> {
   @override
   void initState(){
     super.initState();
-    var postResponse = session.post(urlRoot + 'AllConversations', {});
+    Map<String, String> jsonData = new Map<String, String>();
+    jsonData['other_id'] = widget.otherId;
+    var postResponse = session.post(urlRoot + 'ConversationDetail', jsonData);
     postResponse.then((response) {
       Map<String, dynamic> jsonResponse = json.decode(response);
-      print(jsonResponse);
-      if (jsonResponse['status']) {
-        for (Map<String, dynamic> d in jsonResponse['data']){
-          _messages.add(new ConvDetail(name: d['name'], lastTime: d['last_timestamp']));
-        }
-        print(_messages.length);
-//        _messages.sort((a, b) => DateTime.parse(a.lastTime).isAfter(DateTime.parse(b.lastTime)) ? 1 : -1);
+      if (!jsonResponse['status']) {
         setState(() {
           _loaded = true;
         });
@@ -71,10 +64,10 @@ class ChatPageState extends State<ChatPage> {
   }
 }
 
-class ConvDetail extends StatelessWidget {
-  final String lastTime;
+class ChatMessage extends StatelessWidget {
+  final String text;
   final String name;
-  ConvDetail({this.lastTime, this.name});
+  ChatMessage({this.text, this.name});
   @override
   Widget build(BuildContext context) {
     return new Container(
@@ -88,7 +81,7 @@ class ConvDetail extends StatelessWidget {
               new Text(name, style: Theme.of(context).textTheme.subhead),
               new Container(
                 margin: const EdgeInsets.only(top: 5.0),
-                child: new Text(lastTime),
+                child: new Text(text),
               ),
             ],
           ),
