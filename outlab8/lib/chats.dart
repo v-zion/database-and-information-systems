@@ -3,6 +3,7 @@ import 'session.dart';
 import 'main.dart';
 import 'dart:convert';
 import 'chat_details.dart';
+import 'new_conv.dart';
 
 class ChatPage extends StatefulWidget {
   @override
@@ -64,11 +65,10 @@ class ChatPageState extends State<ChatPage> {
                 setState(() {
                   _displayMessages = <ConvDetail>[];
                   for (var i = 0; i < _messages.length; i++){
-                    if (_messages[i].name.contains(text)){
+                    if (_messages[i].name.contains(text) || _messages[i].id.contains(text)){
                       _displayMessages.add(_messages[i]);
                     }
                   }
-                  print('yayyy');
                   print(text);
                 });
               },
