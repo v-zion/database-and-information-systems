@@ -14,6 +14,7 @@ class ChatPageState extends State<ChatPage> {
   final session = new Session();
   bool _loaded = false;
   final List<ConvDetail> _messages = <ConvDetail>[];
+  List<ConvDetail> _displayMessages = <ConvDetail>[];
 
   @override
   Widget build(BuildContext context){
@@ -61,17 +62,24 @@ class ChatPageState extends State<ChatPage> {
               ),
               onChanged: (text){
                 setState(() {
-
+                  _displayMessages = <ConvDetail>[];
+                  for (var i = 0; i < _messages.length; i++){
+                    if (_messages[i].name.contains(text)){
+                      _displayMessages.add(_messages[i]);
+                    }
+                  }
+                  print('yayyy');
+                  print(text);
                 });
               },
             ),
             new Flexible(
               child: new ListView.builder(
                 padding: new EdgeInsets.all(8.0),
-            //                  reverse: true,
-                itemBuilder: (_, int index) => _messages[index],
-                itemCount: _messages.length,
-//                shrinkWrap: true,
+                //                  reverse: true,
+                itemBuilder: (_, int index) => _displayMessages[index],
+                itemCount: _displayMessages.length,
+            //                shrinkWrap: true,
               )
             )
           ],
@@ -98,6 +106,7 @@ class ChatPageState extends State<ChatPage> {
                   id: d['uid']));
             }
             print(_messages.length);
+            _displayMessages = _messages;
 //        _messages.sort((a, b) => a == "" ? -1 : b == "" ? 1 : DateTime.parse(a.lastTime).isAfter(DateTime.parse(b.lastTime)) ? 1 : -1);
           }
           else{
