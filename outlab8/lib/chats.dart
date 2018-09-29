@@ -144,7 +144,6 @@ class ConvDetail extends StatelessWidget {
                 ],
               ),
             ],
-
           ),
         ),
       onTap: (){
