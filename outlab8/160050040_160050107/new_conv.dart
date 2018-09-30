@@ -47,7 +47,7 @@ class NewConvState extends State<NewConv>{
 //            ),
 //            decoration: InputDecoration(
 //                border: OutlineInputBorder()
-//            )
+//            ) 
 //        ),
           suggestionsCallback: (pattern) async {
             var response = await session.get(urlRoot + 'AutoCompleteUser?term=' + pattern);

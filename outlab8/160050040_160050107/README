@@ -1,0 +1,5 @@
+The files AllConversations.java was changed to return the name of the other users as well. AutoCompleteUser.java was changed to return the name of the suggestions as well.
+
+Steps to run:
+1. Set up an eclipse project with the Java files, and run on server.
+2. Change the variable urlRoot in main.dart to the format : "IPaddress:Port/eclipseProjectName/"
