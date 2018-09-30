@@ -4,8 +4,6 @@ import 'session.dart';
 import 'main.dart';
 import 'dart:convert';
 import 'chat_details.dart';
-import 'chats.dart';
-import 'chat_details.dart';
 
 class NewConv extends StatefulWidget {
   @override
@@ -97,7 +95,6 @@ class NewConvState extends State<NewConv>{
           },
       ),
         )
-
     );
   }
 }
